@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
-export const GET = async (req: NextRequest) => {
+export const GET = async (req: NextRequest, res: NextResponse) => {
   try {
     console.log("Call hitted on the GET Method");
     // Get video_id from query params: /api/video-status?video_id=123
