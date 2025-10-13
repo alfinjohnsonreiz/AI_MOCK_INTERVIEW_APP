@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { VideoStatus } from "@/lib/types";
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   try {
     console.log("Call hitted on the Post method generateing video");
     const { text } = await req.json();
@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
-export const GET = async (req: NextRequest, res: NextResponse) => {
+export const GET = async (req: NextRequest) => {
   try {
     console.log("Call hitted on the GET Method");
     // Get video_id from query params: /api/video-status?video_id=123
