@@ -62,3 +62,16 @@ export const saveVideoData = mutation({
     return { success: true };
   },
 });
+
+export const getInterviewByUserId = query({
+  args: {
+    userID: v.id("UserTable"),
+  },
+  handler: async (ctx, args) => {
+    const interviews = await ctx.db
+      .query("InterviewSessionTable")
+      .filter((q) => q.eq(q.field("userId"), args.userID))
+      .collect();
+    return interviews;
+  },
+});

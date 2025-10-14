@@ -9,7 +9,7 @@ export default function Header() {
         <Image src={"/logo.svg"} alt="nothing" width={50} height={50} />
         <h1 className="text-base font-bold md:text-2xl">AI Mock Interview</h1>
       </div>
-      <Link href={"/dashboard"}>
+      <Link href={"/"}>
         <Button>Login</Button>
       </Link>
     </nav>

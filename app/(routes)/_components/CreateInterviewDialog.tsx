@@ -34,6 +34,7 @@ function CreateInterviewDialog() {
   const saveInterviewDB = useMutation(api.Interview.SaveInterviewQuestions);
   const onHandleInputChange = (field: string, value: string | null) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
+    console.log("The handle changed", field, value);
   };
 
   const onSubmit = async () => {
@@ -44,6 +45,7 @@ function CreateInterviewDialog() {
     }
     NewformData?.append("jobTitle", formData?.jobTitle);
     NewformData?.append("jobDescription", formData?.jobDescription);
+    console.log("from form data", formData?.jobDescription);
     try {
       const result = await axios.post(
         "api/generate-interview-question",
@@ -77,8 +79,8 @@ function CreateInterviewDialog() {
   };
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button>+ Create Interview</Button>
+      <DialogTrigger className="rounded-md text-sm  h-9 px-4 py-2 has-[>svg]:px-3 bg-primary text-primary-foreground hover:bg-primary/90 ">
+        + Create Interview
       </DialogTrigger>
       <DialogContent className="min-w-3xl">
         <DialogHeader>
@@ -95,7 +97,10 @@ function CreateInterviewDialog() {
                 <ResumeUpload setFiles={(file: File) => setFile(file)} />
               </TabsContent>
               <TabsContent value="job-description">
-                <JobDescription onHandleInputChange={onHandleInputChange} />
+                <JobDescription
+                  onHandleInputChange={onHandleInputChange}
+                  formData={formData}
+                />
               </TabsContent>
             </Tabs>
           </DialogDescription>

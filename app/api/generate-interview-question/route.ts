@@ -39,6 +39,7 @@ export const POST = async (req: NextRequest) => {
       });
     } else {
       // call the webhook n8n hook
+      console.log("The things are", jobDescription, jobTitle);
       const result = await axios.post(
         "http://localhost:5678/webhook-test/generate-interview-qtn",
         { resumeUrl: null, jobTitle, jobDescription }

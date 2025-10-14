@@ -11,20 +11,21 @@ import { Repeat } from "lucide-react";
 import { AiFillMuted } from "react-icons/ai";
 import { AiOutlineMuted } from "react-icons/ai";
 
-type InterviewData = {
+export type InterviewData = {
   jobTitle: string | null;
   jobDescription: string | null;
   interviewQuestions: InterviewQuestions[];
   userId: string | null;
   _id: string | null;
   videoData?: VideoData[];
+  _creationTime?: number;
 };
 
-type InterviewQuestions = {
+export type InterviewQuestions = {
   answer: string;
   question: string;
 };
-type VideoData = {
+export type VideoData = {
   videoId?: string | null;
   createdAt: string | number;
   question: string;
@@ -34,7 +35,6 @@ type VideoData = {
 function Start() {
   const { interviewId } = useParams();
   const sessionId = interviewId as Id<"InterviewSessionTable">;
-
   const convex = useConvex();
 
   const [interviewData, setInterviewData] = useState<InterviewData>();
@@ -54,12 +54,16 @@ function Start() {
   const [isMuted, setIsMuted] = useState(true);
 
   const GetInterviewQuestions = async () => {
-    const result = await convex.query(api.Interview.GetInterviewQuestions, {
-      // @ts-ignore
-      interviewRecordId: interviewId,
-    });
-    console.log("The interviewData response", result);
-    setInterviewData(result);
+    try {
+      const result = await convex.query(api.Interview.GetInterviewQuestions, {
+        // @ts-ignore
+        interviewRecordId: interviewId,
+      });
+      console.log("The interviewData response", result);
+      setInterviewData(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const generateVideo = async (text: string) => {
@@ -158,9 +162,13 @@ function Start() {
   }, [videoId]);
   return (
     <div className="flex flex-col items-center p-6 space-y-6">
-      <h1 className="text-xl font-semibold">
-        The interview code: {interviewData?._id}
-      </h1>
+      {interviewData?._id && (
+        <>
+          <h1 className="text-xl font-semibold">
+            The interview code: {interviewData?._id}
+          </h1>
+        </>
+      )}
 
       {interviewData?.interviewQuestions && (
         <>

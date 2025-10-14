@@ -4,23 +4,26 @@ import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import React, { useContext, useEffect, useState } from "react";
 import { UserDetialContext } from "./context/UserDetailContext";
-import { createContext } from "vm";
 
 function Provider({ children }: any) {
   // Clerk’s useUser() hook to detect the currently authenticated user.
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   const CreateUserMutation = useMutation(api.user.CreateNewUser);
 
   const [userDetail, setUserDetail] = useState<any>();
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    user && callCreateUser();
+    if (isLoaded && user) {
+      callCreateUser();
+    }
   }, [user]);
 
   const callCreateUser = async () => {
-    if (user) {
-      console.log("Provider.ts user is", user.id);
+    try {
+      console.log("Provider.ts user is", user?.id);
       const result = await CreateUserMutation({
         email: user?.primaryEmailAddress?.emailAddress ?? "",
         imageUrl: user?.imageUrl ?? "",
@@ -28,12 +31,21 @@ function Provider({ children }: any) {
       });
       console.log("Result from Provider.ts", result);
       setUserDetail(result);
+    } catch (error) {
+      console.log("Eror in provider", error);
+    } finally {
+      setLoading(false);
     }
   };
+  if (loading) return <div>Loading...</div>;
   return (
     <div>
       <UserDetialContext.Provider
-        value={{ userId: user?.id, userDetail, setUserDetail }}
+        value={{
+          userId: user?.id,
+          userDetail: userDetail,
+          setUserDetail,
+        }}
       >
         {children}
       </UserDetialContext.Provider>

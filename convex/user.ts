@@ -33,7 +33,7 @@ export const CreateNewUser = mutation({
         // _id:result._id
       };
     }
-
+    console.log("db user", user[0]);
     return user[0];
   },
 });

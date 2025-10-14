@@ -1,5 +1,7 @@
+"use client";
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const MenuOptions = [
@@ -17,6 +19,7 @@ const MenuOptions = [
   },
 ];
 function AppHeader() {
+  const router = useRouter();
   return (
     <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
       <div className="flex items-center gap-2">
@@ -29,6 +32,7 @@ function AppHeader() {
             <li
               className="text-lg hover:scale-105 transition-all cursor-pointer"
               key={index}
+              onClick={() => router.push(option.path)}
             >
               {option.name}
             </li>
