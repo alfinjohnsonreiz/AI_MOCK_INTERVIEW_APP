@@ -36,6 +36,7 @@ function Start() {
   const { interviewId } = useParams();
   const sessionId = interviewId as Id<"InterviewSessionTable">;
   const convex = useConvex();
+  const [videoGen, setVideoGen] = useState(false);
 
   const [interviewData, setInterviewData] = useState<InterviewData>();
 
@@ -91,7 +92,17 @@ function Start() {
     if (nextIndex < interviewData.interviewQuestions.length) {
       setCurrentIndex(nextIndex);
       const question = interviewData.interviewQuestions[nextIndex].question;
-      generateVideo(question);
+
+      const videoDataExists = interviewData?.videoData?.find((item) => {
+        return item.question == question && item;
+      });
+
+      if (videoDataExists?.videoId) {
+        setVideoId(videoDataExists.videoId);
+        console.log("video id exists in Database");
+      } else {
+        generateVideo(question);
+      }
     }
   };
 
@@ -141,6 +152,7 @@ function Start() {
       try {
         const { data } = await axios.get(`/api/heygen?video_id=${videoId}`);
         console.log("Video Status:", data);
+
         if (data.data.video_url) {
           setVideoUrl(data.data.video_url);
           clearInterval(interval); // stop polling when ready
@@ -152,6 +164,10 @@ function Start() {
             videoId,
           });
           console.log("Data store", result);
+        }
+        if (data.data.status == "failed") {
+          setVideoGen(true);
+          return;
         }
       } catch (error) {
         console.log(error);
@@ -240,6 +256,22 @@ function Start() {
               </div>
             </motion.div>
           )}
+        </>
+      )}
+      {videoGen && (
+        <>
+          {/* shows when the videoid created but failed to get the video url try creating new videoID */}
+          <p className="text-gray-500 ml-2">failed to Generate video...</p>
+          <button
+            onClick={() => {
+              handleNext();
+              setShowAnswer(false); // hide answer for next question
+            }}
+            disabled={loading}
+            className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50 mt-2"
+          >
+            Next
+          </button>
         </>
       )}
 

@@ -34,7 +34,6 @@ function CreateInterviewDialog() {
   const saveInterviewDB = useMutation(api.Interview.SaveInterviewQuestions);
   const onHandleInputChange = (field: string, value: string | null) => {
     setFormData((prev: any) => ({ ...prev, [field]: value }));
-    console.log("The handle changed", field, value);
   };
 
   const onSubmit = async () => {
