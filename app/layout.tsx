@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Outfit } from "next/font/google";
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
+import Provider from "./Provider";
 
 export const metadata: Metadata = {
   title: "Mock Interview App",
@@ -24,8 +25,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={outfit.className}>
-          <ConvexClientProvider>{children}</ConvexClientProvider>
-          <Toaster />
+          <ConvexClientProvider>
+            <Provider>{children}</Provider>
+            <Toaster />
+          </ConvexClientProvider>
         </body>
       </html>
     </ClerkProvider>

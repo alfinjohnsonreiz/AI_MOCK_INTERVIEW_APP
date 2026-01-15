@@ -1,8 +1,8 @@
 "use client";
-import { api } from "@/convex/_generated/api";
+import React, { useContext, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
-import React, { useContext, useEffect, useState } from "react";
+import { api } from "@/convex/_generated/api";
 import { UserDetialContext } from "./context/UserDetailContext";
 
 function Provider({ children }: any) {
@@ -15,28 +15,32 @@ function Provider({ children }: any) {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (isLoaded && user) {
-      callCreateUser();
-    }
-  }, [user]);
+ useEffect(() => {
+    if (!isLoaded) return; // wait for Clerk to initialize
 
-  const callCreateUser = async () => {
-    try {
-      console.log("Provider.ts user is", user?.id);
-      const result = await CreateUserMutation({
-        email: user?.primaryEmailAddress?.emailAddress ?? "",
-        imageUrl: user?.imageUrl ?? "",
-        name: user?.fullName ?? "",
-      });
-      console.log("Result from Provider.ts", result);
-      setUserDetail(result);
-    } catch (error) {
-      console.log("Eror in provider", error);
-    } finally {
+    if (user) {
+      const callCreateUser = async () => {
+        try {
+          const result = await CreateUserMutation({
+            email: user.primaryEmailAddress?.emailAddress ?? "",
+            imageUrl: user.imageUrl ?? "",
+            name: user.fullName ?? "",
+          });
+          setUserDetail(result);
+        } catch (error) {
+          console.error("Error in Provider:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      callCreateUser();
+    } else {
+      // No user logged in, stop loading
       setLoading(false);
     }
-  };
+  }, [user, isLoaded, CreateUserMutation]);
+
   if (loading) return <div>Loading...</div>;
   return (
     <div>
